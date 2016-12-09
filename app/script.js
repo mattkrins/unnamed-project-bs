@@ -1,8 +1,6 @@
+const {ipcRenderer, remote} = require('electron');
 var serialNumber = require('serial-number');
 var os = require("os");
-
-const {ipcRenderer, remote} = require('electron');
-var percent = 0;
 function Exit(){ipcRenderer.send('close');};
 document.querySelector('.close').addEventListener('click', Exit);
 function sendError(info){
@@ -18,6 +16,7 @@ function sendError(info){
 		//if (counter <= 0) {Exit();}
 	}, 1000);
 };
+var percent = 0;
 function Update(status, txt) {
 	if (status){percent=status}
 	if (txt){$("h1").find("b").text(txt);}
@@ -47,17 +46,18 @@ setTimeout(Bootstrap, 1000);
 function Bootstrap() {
 	$("#PCNAME").text(os.hostname());
 	Update(0,"Finding SNID...");
-	serialNumber(function (err, SNID) {
+	serialNumber(function (err, GotSNID) {
 		if(err){sendError("Failed to find SNID.");}
-		if(SNID){
+		if(GotSNID){
 			Update(10,"SNID Found.");
-			$(".details").find("#SNID").text(SNID);
+			ipcRenderer.send('sendSNID',GotSNID);
+			$(".details").find("#SNID").text(GotSNID);
 			setTimeout(function(){
 				Update(50,"Testing Connection...");
-				$.ajax({type: "POST",url: "index.html",
-					data: "PCNAME="+os.hostname()+"&SNID="+SNID,
+				$.ajax({type: "POST",url: "response.html",
+					data: "PCNAME="+os.hostname()+"&SNID="+GotSNID,
 					success: function(response){
-						if (response!="authenticated"){
+						if (response=="authenticated"){
 							Update(100,"Connection Established.");
 							$(".details").addClass("online");
 							setTimeout(function(){
