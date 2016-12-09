@@ -1,6 +1,5 @@
 'use strict';
 const {app, BrowserWindow, ipcMain, Menu, Tray} = require('electron');
-var $ = require('jQuery');
 var serialNumber = require('serial-number');
 var window = null;
 var SNID = null;
@@ -20,7 +19,6 @@ ipcMain.on('finish', (event, arg) => {
 	console.log("Bootstrap Finished.");
 	//window.hide();
 	window.loadURL('file://' + __dirname + '/app/service.html');
-	window.showDevTools()
 });
 ipcMain.on('errorCollect', (event, arg) => {console.log(arg);});
 ipcMain.on('sendSNID', (event, arg) => {

@@ -7,9 +7,11 @@
   "main": "./main.js",
   "private": true,
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package": "electron-packager ./ NDbootstrap --platform=win32 --overwrite"
   },
   "devDependencies": {
+    "electron-packager": "^8.4.0",
     "electron-prebuilt": "^1.3.8"
   },
   "dependencies": {
